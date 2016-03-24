@@ -1920,7 +1920,7 @@ class IncFancySli(Op):
     def __init__(self, axis):
         self.axis = axis
     def get_diff(self, _):
-        return [True,False,True,True]
+        return [True,False,True]
     def get_py_func(self, input_types):
         def f(reads, write):
             x, inds, y=reads
