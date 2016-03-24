@@ -520,6 +520,12 @@ def Argument(typ, name=None, fixed_shape=None, props=None):
     """
     Just here as as "damage control" after some refactoring/renaming
     """
+    if isinstance(fixed_shape, int):
+        fixed_shape = (fixed_shape,)
+    if fixed_shape is not None:
+        assert hasattr(fixed_shape, "__iter__"), "fixed_shape must be iterable"
+        assert len(fixed_shape) == typ.ndim, "length of fixed_shape must equal number of dimensions"
+        fixed_shape = tuple(fixed_shape)
     return Node(typ, None, [], props=props or default_props(), fixed_shape=fixed_shape, name=name)
 
 class GetData(Op):
