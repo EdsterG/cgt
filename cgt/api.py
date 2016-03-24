@@ -389,7 +389,11 @@ def _subtensor2(x, slis, y):
                 yshape = cgt.shape(y)
                 yshape.insert(ax, 1)
                 y = y.reshape(yshape)
-            sli = slice(sli, sli + 1, 1)
+            if sli == -1:
+                # oddly, slice(sli, sli + 1, 1) doesn't work for -1
+                sli = slice(-1,-2,-1)
+            else:
+                sli = slice(sli, sli + 1, 1)
 
         assert isinstance(sli.step, int) or sli.step is None
         step = 1 if sli.step is None else sli.step
