@@ -2080,7 +2080,10 @@ class Mul21(Op):
         if inputs[1] in analysis["node2sv"]:
             return cgt.sum(inputs[0],0 if self.tA else 1) * analysis["node2sv"][inputs[1]]
     def pullback(self, inputs, _output, goutput):
-        return [cgt.outer(goutput,inputs[1]), Result(Mul21(not self.tA), [inputs[0],goutput])]
+        if self.tA:
+            return [cgt.outer(inputs[1],goutput), Result(Mul21(not self.tA), [inputs[0],goutput])]
+        else:
+            return [cgt.outer(goutput,inputs[1]), Result(Mul21(not self.tA), [inputs[0],goutput])]
     def shp_apply(self, inputs):
         assertequal1(cgt.size(inputs[0],0 if self.tA else 1),cgt.size(inputs[1],0),
             "shape mismatch at matrix-vector multiplication")
@@ -2294,7 +2297,7 @@ class Outer(Op):
             write[:] = np.outer(reads[0], reads[1])
         return f
     def pullback(self, inputs, _output, goutput):
-        return [goutput.dot(inputs[0]), inputs[1].dot(goutput)]
+        return [goutput.dot(inputs[1]), inputs[0].dot(goutput)]
     def shp_apply(self, inputs):
         return [cgt.size(inputs[0],0), cgt.size(inputs[1],0)]
     def typ_apply(self, input_types):
